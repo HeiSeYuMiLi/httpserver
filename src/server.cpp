@@ -1,6 +1,7 @@
 #include "server.h"
 #include "connection.h"
 #include "logger.h"
+#include "thread_pool.h"
 
 namespace httpserver {
 
