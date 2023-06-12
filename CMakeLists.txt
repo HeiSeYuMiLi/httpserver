@@ -8,6 +8,7 @@ set(SOURCES
 	src/request_handler.cpp
 	src/request_parser.cpp
 	src/server.cpp
+	src/thread_pool.cpp
         src/logger.cpp
 	src/main.cpp
 )
