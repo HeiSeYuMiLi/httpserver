@@ -4,7 +4,8 @@
 
 namespace httpserver {
 
-	Connection::Connection(boost::asio::io_context& ioc, Server* server) :_sock(ioc), _server(server) {
+	Connection::Connection(boost::asio::io_context& ioc, Server* server) :_sock(ioc), _server(server),
+		_strand(ioc.get_executor()) {
 		boost::uuids::uuid  a_uuid = boost::uuids::random_generator()();
 		_uuid = boost::uuids::to_string(a_uuid);
 	}
@@ -29,8 +30,9 @@ namespace httpserver {
 	}
 
 	void Connection::Start() {
-		_sock.async_read_some(boost::asio::buffer(_buff), std::bind(&Connection::HandleRead, this,
-			std::placeholders::_1, std::placeholders::_2, SharedSelf()));
+		_sock.async_read_some(boost::asio::buffer(_buff), 
+			boost::asio::bind_executor(_strand, std::bind(&Connection::HandleRead, this,
+				std::placeholders::_1, std::placeholders::_2, SharedSelf())));
 	}
 
 	void Connection::HandleRead(const boost::system::error_code& ec, size_t bytes_transferred,
@@ -40,8 +42,9 @@ namespace httpserver {
 				_requestHandler.HandleRequest(_req, _rep);
 			else
 				_rep = Reply::stock_reply(Reply::status_type::bad_request);
-			boost::asio::async_write(_sock, _rep.to_buffers(), std::bind(&Connection::HandleWrite,
-				this, std::placeholders::_1, SharedSelf()));
+			boost::asio::async_write(_sock, _rep.to_buffers(),
+				boost::asio::bind_executor(_strand, std::bind(&Connection::HandleWrite,
+					this, std::placeholders::_1, SharedSelf())));
 		}
 		else if (ec != boost::asio::error::operation_aborted)
 		{

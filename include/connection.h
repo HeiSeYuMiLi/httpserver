@@ -39,6 +39,7 @@ namespace httpserver {
 		char _buff[8912];
 		RequestParser _requestParser;
 		RequestHandler _requestHandler;
+boost::asio::strand<boost::asio::io_context::executor_type> _strand;
 	};
 
 }

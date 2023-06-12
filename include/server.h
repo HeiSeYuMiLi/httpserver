@@ -13,7 +13,7 @@ namespace httpserver {
 
 	class Server {
 	public:
-		Server(const std::string& address, short port);
+		Server(boost::asio::io_context& ioc, const std::string& address, short port);
 
 		//开始循环
 		void Run();
@@ -22,7 +22,7 @@ namespace httpserver {
 		void DoAccept();
 		void HandleAccept(std::shared_ptr<Connection>, const boost::system::error_code& ec);
 
-		boost::asio::io_context _ioc;
+		boost::asio::io_context& _ioc;
 		tcp::acceptor _acceptor;
 		std::map<std::string, std::shared_ptr<Connection>> _connections;
 	};

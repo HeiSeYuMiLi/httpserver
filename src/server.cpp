@@ -1,11 +1,10 @@
 #include "server.h"
 #include "connection.h"
 #include "logger.h"
-#include "thread_pool.h"
 
 namespace httpserver {
 
-	Server::Server(const std::string& address, short port) :_ioc(1), _acceptor(_ioc, 
+	Server::Server(boost::asio::io_context& ioc, const std::string& address, short port) :_ioc(ioc), _acceptor(_ioc,
 		tcp::endpoint(boost::asio::ip::address::from_string(address), port)) {
 		Logger(FILE_LOCATION, log_level::info, "Server start success, listen on port : " + std::to_string(port));
 		DoAccept();
