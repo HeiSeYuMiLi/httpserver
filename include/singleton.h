@@ -2,7 +2,6 @@
 #include <memory>
 #include <mutex>
 #include <iostream>
-using namespace std;
 
 namespace httpserver {
 
@@ -24,7 +23,7 @@ namespace httpserver {
 			return _instance;
 		}
 		void PrintAddress() {
-			std::cout << _instance.get() << endl;
+			std::cout << _instance.get() << std::endl;
 		}
 		~Singleton() {
 			std::cout << "this is singleton destruct" << std::endl;
